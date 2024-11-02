@@ -176,7 +176,6 @@ public class Model {
             }
         }
         board.move(x,targetY,currTile);
-
         // TODO: Tasks 5, 6, and 10. Fill in this function.
     }
 
@@ -187,10 +186,21 @@ public class Model {
      * */
     public void tiltColumn(int x) {
         // TODO: Task 7. Fill in this function.
+        for(int y= board.size()-1;y>=0;y--){
+            //注意对遍历的tile进行非空判断
+            //对该列的每个元素向上移动，从最上方的tile开始
+            if(board.tile(x, y) !=null){
+                moveTileUpAsFarAsPossible(x,y);
+            }
+        }
     }
 
     public void tilt(Side side) {
         // TODO: Tasks 8 and 9. Fill in this function.
+        //遍历所有列
+        for(int x=0;x< board.size();x++){
+            tiltColumn(x);
+        }
     }
 
     /** Tilts every column of the board toward SIDE.
