@@ -165,8 +165,9 @@ public class Model {
                 continue;
             }
             //2.上方存在值相等的tile，移动到该位置
-           if(nextTile.value()==myValue){
+           if(nextTile.value()==myValue && !nextTile.wasMerged()){
                targetY = cols;
+               score = score +2*myValue;
                break;
            }
             //3.上方存在值不等的tile，移动到该位置的正下方
@@ -174,8 +175,10 @@ public class Model {
                 targetY = cols-1;
                 break;
             }
+        }if(targetY!=y){
+            board.move(x,targetY,currTile);
         }
-        board.move(x,targetY,currTile);
+
         // TODO: Tasks 5, 6, and 10. Fill in this function.
     }
 
@@ -197,10 +200,12 @@ public class Model {
 
     public void tilt(Side side) {
         // TODO: Tasks 8 and 9. Fill in this function.
+        board.setViewingPerspective(side);
         //遍历所有列
         for(int x=0;x< board.size();x++){
             tiltColumn(x);
         }
+        board.setViewingPerspective(Side.NORTH);
     }
 
     /** Tilts every column of the board toward SIDE.
