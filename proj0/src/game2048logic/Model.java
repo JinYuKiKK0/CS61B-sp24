@@ -175,6 +175,7 @@ public class Model {
                 targetY = cols-1;
                 break;
             }
+
         }if(targetY!=y){
             board.move(x,targetY,currTile);
         }
