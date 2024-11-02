@@ -127,6 +127,7 @@ public class Model {
                 for(int j=0;j<board.size()-1;j++)
                     if(board.tile(i,j).value()==board.tile(i,j+1).value())
                         return true;
+            //judge rows
             for(int i=0;i<board.size();i++)
                 for(int j=0;j<board.size()-1;j++)
                     if(board.tile(j,i).value()==board.tile(j+1,i).value())
@@ -151,8 +152,30 @@ public class Model {
      */
     public void moveTileUpAsFarAsPossible(int x, int y) {
         Tile currTile = board.tile(x, y);
+        if(currTile==null){
+            return;
+        }
         int myValue = currTile.value();
         int targetY = y;
+        for(int cols=y+1;cols< board.size();cols++){
+            Tile nextTile = board.tile(x,cols);
+            //1.如果上方tile为空
+            if(nextTile==null){
+                targetY = cols;
+                continue;
+            }
+            //2.上方存在值相等的tile，移动到该位置
+           if(nextTile.value()==myValue){
+               targetY = cols;
+               break;
+           }
+            //3.上方存在值不等的tile，移动到该位置的正下方
+            if(nextTile.value()!=myValue){
+                targetY = cols-1;
+                break;
+            }
+        }
+        board.move(x,targetY,currTile);
 
         // TODO: Tasks 5, 6, and 10. Fill in this function.
     }
