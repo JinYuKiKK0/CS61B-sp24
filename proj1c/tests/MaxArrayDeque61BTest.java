@@ -15,7 +15,7 @@ public class MaxArrayDeque61BTest {
 
     @Test
     public void basicTest() {
-        MaxArrayDeque61B<String> mad = new MaxArrayDeque61B<>(new StringLengthComparator());
+        MaxArrayDeque61B<String> mad = new MaxArrayDeque61B<>();
         mad.addFirst("");
         mad.addFirst("2");
         mad.addFirst("fury road");

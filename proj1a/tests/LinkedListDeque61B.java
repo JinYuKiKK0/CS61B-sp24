@@ -1,8 +1,7 @@
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkedListDeque61B<T> implements Deque61B {
+public class LinkedListDeque61B<T> implements Deque61B<T> {
     private Node sentinel;
     private int size;
     private Node last;
@@ -23,6 +22,8 @@ public class LinkedListDeque61B<T> implements Deque61B {
         sentinel = new Node(null,null,null);
         last = new Node(null,sentinel,null);
         sentinel.next = last;
+        sentinel.pre = last;
+        last.next = sentinel;
         size = 0;
     }
 
@@ -68,7 +69,7 @@ public class LinkedListDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object removeFirst() {
+    public T removeFirst() {
         Node oldFirst = sentinel.next;
         Node newFirst = oldFirst.next;
         if(oldFirst == last){
@@ -82,7 +83,7 @@ public class LinkedListDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object removeLast() {
+    public T removeLast() {
         Node oldLast = last.pre;
         Node newLast = oldLast.pre;
         if(oldLast == sentinel){
@@ -96,7 +97,7 @@ public class LinkedListDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object get(int index) {
+    public T get(int index) {
         if(index >= size||index <0){
             System.out.println("OutOfBoundsIndex");
             return null;
@@ -116,7 +117,7 @@ public class LinkedListDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object getRecursive(int index) {
+    public T getRecursive(int index) {
         if(index <0||index >size){
             System.out.println("ArrayOutOfBoundsIndex");
             return null;

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayDeque61B<T> implements Deque61B {
+public class ArrayDeque61B<T> implements Deque61B<T> {
     private T[] array;
     private final int INIT_CAPACITY = 8;
     private int size;
@@ -85,7 +85,7 @@ public class ArrayDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object removeFirst() {
+    public T removeFirst() {
         if (isEmpty()) {
             return null;
         }
@@ -102,7 +102,7 @@ public class ArrayDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object removeLast() {
+    public T removeLast() {
         if (isEmpty()) {
             return null;
         }
@@ -115,11 +115,11 @@ public class ArrayDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object get(int index) {
+    public T get(int index) {
         if (index < 0 || index > array.length - 1) {
             return null;
         }
-        return array[index];
+        return array[Math.floorMod((nextFirst + index),array.length)];
     }
 
     public void printDeque() {
@@ -147,7 +147,7 @@ public class ArrayDeque61B<T> implements Deque61B {
     }
 
     @Override
-    public Object getRecursive(int index) {
+    public T getRecursive(int index) {
         throw new UnsupportedOperationException("No need to implement getRecursive for proj 1b");
     }
 }
