@@ -5,7 +5,7 @@ public class Percolation {
     // TODO: Add any necessary instance variables.
     boolean[][] array;
     WeightedQuickUnionUF uf;
-
+    WeightedQuickUnionUF ufHelper;
     public Percolation(int N) {
         // TODO: Fill in this constructor.
         if(N<=0){
@@ -13,7 +13,18 @@ public class Percolation {
         }
         array = new boolean[N][N];
         uf=new WeightedQuickUnionUF(N*N+2);
-        
+        ufHelper = new WeightedQuickUnionUF(N*N+1);
+        for(int i=0;i< array.length;i++)
+            for(int j=0;j< array.length;j++){
+                int d = xyTo1D(i, j);
+                if(d<N){
+                    uf.union(d,N*N);//initialize the top site
+                    ufHelper.union(d,N*N);
+                }
+                if(d>=N*N-N){
+                    uf.union(d,N*N+1);//initialize the bottom site
+                }
+            }
     }
 
     public void open(int row, int col) {
@@ -35,14 +46,7 @@ public class Percolation {
         exceptionProcess(row,col);
 
         int blockIndex = xyTo1D(row, col);
-        int i=0;
-        while(i++< array.length){
-            if(uf.connected(blockIndex,i)){
-                return true;
-            }
-        }
-
-        return false;
+        return ufHelper.connected(blockIndex, array.length* array.length);
     }
 
     public int numberOfOpenSites() {
@@ -60,17 +64,13 @@ public class Percolation {
 
     public boolean percolates() {
         // TODO: Fill in this method.
-        int N = array.length-1;
-        int i =0;
-        while(i< array.length){
-            if(isFull(N,i++))
-                return true;
-        }
-        return false;
+        int N= array.length;
+        return uf.connected(N*N,N*N+1);
     }
 
     // TODO: Add any useful helper methods (we highly recommend this!).
     private int xyTo1D(int r, int c) {//e.g xyTo1D(2,4) = 14
+        exceptionProcess(r,c);
         return r * array.length + c;
     }
     private void exceptionProcess(int row,int col){
@@ -91,24 +91,25 @@ public class Percolation {
         if(row >0&&isOpen(row-1,col)){
             d2=xyTo1D(row-1,col);
             uf.union(d1,d2);
+            ufHelper.union(d1,d2);
         }
         if(row< array.length-1&&isOpen(row+1,col)){
             d2=xyTo1D(row+1,col);
             uf.union(d1,d2);
+            ufHelper.union(d1,d2);
         }
         if(col>0&&isOpen(row,col-1)){
             d2=xyTo1D(row,col-1);
             uf.union(d1,d2);
+            ufHelper.union(d1,d2);
         }
         if(col< array.length-1&&isOpen(row,col+1)){
             d2=xyTo1D(row,col+1);
             uf.union(d1,d2);
+            ufHelper.union(d1,d2);
         }
     }
 
-    public static void main(String[] args) {
-
-    }
     // TODO: Remove all TODO comments before submitting.
 
 }
