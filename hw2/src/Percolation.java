@@ -6,8 +6,10 @@ public class Percolation {
     boolean[][] array;
     WeightedQuickUnionUF uf;
     WeightedQuickUnionUF ufHelper;
+    private int openSitesCount;
     public Percolation(int N) {
         // TODO: Fill in this constructor.
+        openSitesCount = 0;
         if(N<=0){
             throw new IllegalArgumentException("You can't create a grid with less than 0 element");
         }
@@ -33,6 +35,7 @@ public class Percolation {
 
         array[row][col] = true;
         connected2Union(row, col);
+        openSitesCount++;
     }
 
     public boolean isOpen(int row, int col) {
@@ -51,15 +54,7 @@ public class Percolation {
 
     public int numberOfOpenSites() {
         // TODO: Fill in this method.
-            int count =0;
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array.length; j++) {
-                if(array[i][j]){
-                    count++;
-                }
-            }
-        }
-        return count;
+        return openSitesCount;
     }
 
     public boolean percolates() {
