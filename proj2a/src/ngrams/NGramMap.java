@@ -1,6 +1,10 @@
 package ngrams;
 
+import edu.princeton.cs.algs4.In;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import static ngrams.TimeSeries.MAX_YEAR;
 import static ngrams.TimeSeries.MIN_YEAR;
@@ -18,12 +22,15 @@ import static ngrams.TimeSeries.MIN_YEAR;
 public class NGramMap {
 
     // TODO: Add any necessary static/instance variables.
-
+    HashMap<String,TimeSeries> words;
+    ArrayList<TimeSeries> counts;
     /**
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
      */
     public NGramMap(String wordsFilename, String countsFilename) {
         // TODO: Fill in this constructor. See the "NGramMap Tips" section of the spec for help.
+        In words = new In(wordsFilename);
+        In counts = new In(countsFilename);
     }
 
     /**
@@ -32,6 +39,10 @@ public class NGramMap {
      * words, changes made to the object returned by this function should not also affect the
      * NGramMap. This is also known as a "defensive copy". If the word is not in the data files,
      * returns an empty TimeSeries.
+     * 提供 STARTYEAR 到 ENDYEAR（包含两端）期间 WORD 的历史记录。
+     * 返回的 TimeSeries 应为副本，而非指向此 NGramMap 的 TimeSeries 的链接。
+     * 此函数返回的对象所做的更改不应影响NGramMap。这也称为“防御性复制”。
+     * 如果该词不在数据文件中，返回一个空的 TimeSeries。
      */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
@@ -51,6 +62,7 @@ public class NGramMap {
 
     /**
      * Returns a defensive copy of the total number of words recorded per year in all volumes.
+     * 返回总卷数中每年记录的总数的副本
      */
     public TimeSeries totalCountHistory() {
         // TODO: Fill in this method.
@@ -61,6 +73,9 @@ public class NGramMap {
      * Provides a TimeSeries containing the relative frequency per year of WORD between STARTYEAR
      * and ENDYEAR, inclusive of both ends. If the word is not in the data files, returns an empty
      * TimeSeries.
+     * 提供一个 TimeSeries，包含 WORD 在每年出现的相对频率，从 STARTYEAR 开始
+     * 并且 ENDYEAR，包含两端。如果该词不在数据文件中，则返回空
+     * 时间序列
      */
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
@@ -81,6 +96,8 @@ public class NGramMap {
      * Provides the summed relative frequency per year of all words in WORDS between STARTYEAR and
      * ENDYEAR, inclusive of both ends. If a word does not exist in this time frame, ignore it
      * rather than throwing an exception.
+     * 提供 WORDS 中所有词语在 STARTYEAR 至ENDYEAR，包含两端 之间每年总的相对频率。
+     * 如果某个词不在该时间范围内，则忽略它
      */
     public TimeSeries summedWeightHistory(Collection<String> words,
                                           int startYear, int endYear) {
