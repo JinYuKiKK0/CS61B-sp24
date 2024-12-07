@@ -1,7 +1,6 @@
 package ngrams;
 
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * An object for mapping a year number (e.g. 1996) to numerical data. Provides
@@ -31,6 +30,10 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
         // TODO: Fill in this constructor.
+       for(int i = startYear;i<=endYear;i++){
+           Double dataPoint = ts.get(i);
+           this.put(i,dataPoint);
+       }
     }
 
     /**
@@ -38,7 +41,12 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public List<Integer> years() {
         // TODO: Fill in this method.
-        return null;
+        Set<Integer> yearSet = this.keySet();
+        List<Integer> yearList = new ArrayList<>();
+        for (Integer integer : yearSet) {
+            yearList.add(integer);
+        }
+        return yearList;
     }
 
     /**
@@ -47,7 +55,13 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public List<Double> data() {
         // TODO: Fill in this method.
-        return null;
+        List<Integer> years = this.years();
+        List<Double> dataList = new ArrayList<>();
+        for (Integer year : years) {
+            Double data = this.get(year);
+            dataList.add(data);
+        }
+        return dataList;
     }
 
     /**
@@ -61,13 +75,25 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries plus(TimeSeries ts) {
         // TODO: Fill in this method.
-        return null;
+        TimeSeries total = new TimeSeries();
+        total.putAll(this);
+        for (Map.Entry<Integer, Double> integerDoubleEntry : ts.entrySet()) {
+            int year = integerDoubleEntry.getKey();
+            double data = integerDoubleEntry.getValue();
+
+            if(total.containsKey(year)){
+                total.put(year,get(year)+data);
+            }else {
+                total.put(year,data);
+            }
+        }
+        return total;
     }
 
     /**
      * Returns the quotient of the value for each year this TimeSeries divided by the
      * value for the same year in TS. Should return a new TimeSeries (does not modify this
-     * TimeSeries).
+     * TimeSeries).     this/ts
      *
      * If TS is missing a year that exists in this TimeSeries, throw an
      * IllegalArgumentException.
@@ -75,9 +101,20 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries dividedBy(TimeSeries ts) {
         // TODO: Fill in this method.
-        return null;
+        TimeSeries quotient = new TimeSeries();
+        quotient.putAll(ts);
+        for (Map.Entry<Integer, Double> entry : quotient.entrySet()) {
+            int year = entry.getKey();
+            double data = entry.getValue();
+            if(quotient.containsKey(year)){
+                quotient.put(year,get(year)/data);
+            }else
+                throw new IllegalArgumentException();
+        }
+        return quotient;
     }
 
     // TODO: Add any private helper methods.
+
     // TODO: Remove all TODO comments before submitting.
 }
