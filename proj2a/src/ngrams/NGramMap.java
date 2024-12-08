@@ -13,7 +13,7 @@ import static ngrams.TimeSeries.MIN_YEAR;
 /**
  * An object that provides utility methods for making queries on the
  * Google NGrams dataset (or a subset thereof).
- *
+ * <p>
  * An NGramMap stores pertinent data from a "words file" and a "counts
  * file". It is not a map in the strict sense, but it does provide additional
  * functionality.
@@ -23,35 +23,46 @@ import static ngrams.TimeSeries.MIN_YEAR;
 public class NGramMap {
 
     // TODO: Add any necessary static/instance variables.
-    HashMap<String,TimeSeries> wordsMap;//存储word与时间序列的映射
-    ArrayList<TimeSeries> countsMap;//存储各个年份的总卷数
+    HashMap<String, TimeSeries> wordsMap;//存储word与时间序列的映射
+    TimeSeries countsMap;//存储各个年份的总卷数
+
     /**
      * Constructs an NGramMap from WORDSFILENAME and COUNTSFILENAME.
      */
     public NGramMap(String wordsFilename, String countsFilename) {
         // TODO: Fill in this constructor. See the "NGramMap Tips" section of the spec for help.
         wordsMap = new HashMap<>();
-        countsMap = new ArrayList<>();
+        countsMap = new TimeSeries();
         In words = new In(wordsFilename);
-        while(words.hasNextLine()){
-            String readLine = words.readLine();
-            String[] wordsSplit = readLine.split("\t");
+        String readLine = words.readLine();
+        String[] wordsSplit = readLine.split("\t");
+        String curWord = wordsSplit[0];
+        TimeSeries wordTs = new TimeSeries();
+        while (words.hasNextLine()) {
+            readLine = words.readLine();
+            wordsSplit = readLine.split("\t");
             String word = wordsSplit[0];
             String year = wordsSplit[1];
             String times = wordsSplit[2];
-            TimeSeries wordTs = new TimeSeries();//每次循环都重新创建TS，没有保存
-            wordTs.put(Integer.parseInt(year),Double.parseDouble(times));
-            wordsMap.put(word,wordTs);
+            if (word.equals(curWord)) {
+                wordTs.put(Integer.parseInt(year), Double.parseDouble(times));
+                wordsMap.put(word, wordTs);
+            } else {
+                TimeSeries newWordTs = new TimeSeries();
+                newWordTs.put(Integer.parseInt(year), Double.parseDouble(times));
+                wordsMap.put(word, wordTs);
+                curWord = word;
+                wordTs = newWordTs;
+            }
+
         }
         In counts = new In(countsFilename);
-        while(counts.hasNextLine()){
-            String readLine = counts.readLine();
+        while (counts.hasNextLine()) {
+            readLine = counts.readLine();
             String[] countsSplit = readLine.split(",");
             String year = countsSplit[0];
             String count = countsSplit[1];
-            TimeSeries countTs =new TimeSeries();
-            countTs.put(Integer.parseInt(year),Double.parseDouble(count));
-            countsMap.add(countTs);
+            countsMap.put(Integer.parseInt(year),Double.parseDouble(count));
         }
     }
 
@@ -68,11 +79,11 @@ public class NGramMap {
      */
     public TimeSeries countHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
-        if(wordsMap.containsKey(word)){
+        if (wordsMap.containsKey(word)) {
             TimeSeries wordSeries = wordsMap.get(word);
-            TimeSeries ts = new TimeSeries(wordSeries,startYear,endYear);
+            TimeSeries ts = new TimeSeries(wordSeries, startYear, endYear);
             return ts;
-        }else return new TimeSeries();
+        } else return new TimeSeries();
     }
 
     /**
@@ -83,11 +94,11 @@ public class NGramMap {
      */
     public TimeSeries countHistory(String word) {
         // TODO: Fill in this method.
-        if(wordsMap.containsKey(word)){
+        if (wordsMap.containsKey(word)) {
             TimeSeries wordSeries = wordsMap.get(word);
             List<Integer> years = wordSeries.years();
-            return new TimeSeries(wordSeries, years.get(0), years.get(years.size()-1));
-        }else return new TimeSeries();
+            return new TimeSeries(wordSeries, years.get(0), years.get(years.size() - 1));
+        } else return new TimeSeries();
     }
 
     /**
@@ -96,7 +107,7 @@ public class NGramMap {
      */
     public TimeSeries totalCountHistory() {
         // TODO: Fill in this method.
-        return null;
+        return new TimeSeries(countsMap,MIN_YEAR,MAX_YEAR);
     }
 
     /**
@@ -109,6 +120,10 @@ public class NGramMap {
      */
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
+        if(wordsMap.containsKey(word)){
+            TimeSeries wordSeries = new TimeSeries(wordsMap.get(word),startYear,endYear);
+            return wordSeries.dividedBy(countsMap);
+        }
         return null;
     }
 
@@ -119,6 +134,10 @@ public class NGramMap {
      */
     public TimeSeries weightHistory(String word) {
         // TODO: Fill in this method.
+        if(wordsMap.containsKey(word)){
+            TimeSeries wordSeries = wordsMap.get(word);
+            return wordSeries.dividedBy(countsMap);
+        }
         return null;
     }
 
@@ -131,7 +150,13 @@ public class NGramMap {
      */
     public TimeSeries summedWeightHistory(Collection<String> words, int startYear, int endYear) {
         // TODO: Fill in this method.
-        return null;
+        TimeSeries wordSeries = new TimeSeries();
+        TimeSeries temp;
+        for (String word : words) {
+            temp = new TimeSeries(wordsMap.get(word),startYear,endYear);
+            wordSeries.plus(temp);
+        }
+        return wordSeries;
     }
 
     /**
@@ -140,10 +165,15 @@ public class NGramMap {
      */
     public TimeSeries summedWeightHistory(Collection<String> words) {
         // TODO: Fill in this method.
-        return null;
+        TimeSeries wordSeries = new TimeSeries();
+        TimeSeries temp;
+        for (String word : words) {
+            temp = wordsMap.get(word);
+            wordSeries.plus(temp);
+        }
+        return wordSeries;
     }
 
     // TODO: Add any private helper methods.
-
     // TODO: Remove all TODO comments before submitting.
 }
