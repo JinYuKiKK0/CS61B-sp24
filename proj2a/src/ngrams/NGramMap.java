@@ -153,7 +153,7 @@ public class NGramMap {
         TimeSeries wordSeries = new TimeSeries();
         TimeSeries temp;
         for (String word : words) {
-            temp = new TimeSeries(wordsMap.get(word),startYear,endYear);
+            temp = weightHistory(word,startYear,endYear);
             wordSeries.plus(temp);
         }
         return wordSeries;
@@ -168,7 +168,7 @@ public class NGramMap {
         TimeSeries wordSeries = new TimeSeries();
         TimeSeries temp;
         for (String word : words) {
-            temp = wordsMap.get(word);
+            temp = weightHistory(word);
             wordSeries.plus(temp);
         }
         return wordSeries;
