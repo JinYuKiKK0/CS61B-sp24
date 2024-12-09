@@ -115,8 +115,7 @@ public class NGramMap {
      * and ENDYEAR, inclusive of both ends. If the word is not in the data files, returns an empty
      * TimeSeries.
      * 提供一个 TimeSeries，包含 WORD 在每年出现的相对频率，从 STARTYEAR 开始
-     * 并且 ENDYEAR，包含两端。如果该词不在数据文件中，则返回空
-     * 时间序列
+     * 并且 ENDYEAR，包含两端。如果该词不在数据文件中，则返回空时间序列
      */
     public TimeSeries weightHistory(String word, int startYear, int endYear) {
         // TODO: Fill in this method.
@@ -124,7 +123,7 @@ public class NGramMap {
             TimeSeries wordSeries = new TimeSeries(wordsMap.get(word),startYear,endYear);
             return wordSeries.dividedBy(countsMap);
         }
-        return null;
+        return new TimeSeries();
     }
 
     /**
@@ -138,7 +137,7 @@ public class NGramMap {
             TimeSeries wordSeries = wordsMap.get(word);
             return wordSeries.dividedBy(countsMap);
         }
-        return null;
+        return new TimeSeries();
     }
 
     /**
@@ -154,7 +153,10 @@ public class NGramMap {
         TimeSeries temp;
         for (String word : words) {
             temp = weightHistory(word,startYear,endYear);
-            wordSeries.plus(temp);
+            if(temp != null && !temp.isEmpty()){
+                wordSeries = wordSeries.plus(temp);
+            }
+
         }
         return wordSeries;
     }

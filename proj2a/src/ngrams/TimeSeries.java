@@ -105,6 +105,9 @@ public class TimeSeries extends TreeMap<Integer, Double> {
         quotient.putAll(this);
         for (Map.Entry<Integer, Double> entry : quotient.entrySet()) {
             Integer year = entry.getKey();
+            if(entry.getValue() == null){
+                continue;
+            }
             Double data = entry.getValue();
             if(ts.containsKey(year)){
                 quotient.put(year,data/ts.get(year));
