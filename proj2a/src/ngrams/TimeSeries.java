@@ -102,14 +102,13 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public TimeSeries dividedBy(TimeSeries ts) {
         // TODO: Fill in this method.
         TimeSeries quotient = new TimeSeries();
-        quotient.putAll(ts);
+        quotient.putAll(this);
         for (Map.Entry<Integer, Double> entry : quotient.entrySet()) {
-            int year = entry.getKey();
-            double data = entry.getValue();
-            if(quotient.containsKey(year)){
-                quotient.put(year,get(year)/data);
-            }else
-                throw new IllegalArgumentException();
+            Integer year = entry.getKey();
+            Double data = entry.getValue();
+            if(ts.containsKey(year)){
+                quotient.put(year,data/ts.get(year));
+            }else throw new IllegalArgumentException();
         }
         return quotient;
     }

@@ -73,4 +73,29 @@ public class NGramMapTest {
         assertThat(fishPlusDogWeight.get(1865)).isWithin(1E-10).of(expectedFishPlusDogWeight1865);
     }
 
+    @Test
+    public void testOnShortFile(){
+        // creates an NGramMap from a large dataset
+        NGramMap ngm =new NGramMap(SHORT_WORDS_FILE,TOTAL_COUNTS_FILE);
+        // returns the count of the number of occurrences of request per year between 2005 and 2008.
+        TimeSeries requestCount = ngm.countHistory("request",2005,2008);
+        assertThat(requestCount.get(2006)).isWithin(1E-10).of(677820.0);
+        assertThat(requestCount.get(2008)).isWithin(1E-10).of(795265.0);
+
+        TimeSeries totalCounts = ngm.totalCountHistory();
+        assertThat(totalCounts.get(1865)).isWithin(1E-10).of(2563919231.0);
+        // returns the relative weight of the word fish in each year between 2005 and 2008.
+        TimeSeries requestWeight = ngm.weightHistory("request",2005,2008);
+        assertThat(requestWeight.get(2007)).isWithin(1E-10).of(697645.0/28307904288.0);
+
+        TimeSeries wanderedCount = ngm.countHistory("wandered",2005,2008);
+        assertThat(wanderedCount.get(2006)).isWithin(1E-10).of(87688.0);
+
+        List<String > requestAndWandered = new ArrayList<>();
+        requestAndWandered.add("request");
+        requestAndWandered.add("wandered");
+        TimeSeries requestPlusWandered = ngm.summedWeightHistory(requestAndWandered,2005,2008);
+        double expectedRequestAndWandered2006 = (677820.0+87688.0) / 27695491774.0;
+        assertThat(requestPlusWandered.get(2006)).isWithin(1E-10).of(expectedRequestAndWandered2006);
+    }
 }  
