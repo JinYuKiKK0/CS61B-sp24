@@ -144,8 +144,8 @@ public class NGramMap {
      * Provides the summed relative frequency per year of all words in WORDS between STARTYEAR and
      * ENDYEAR, inclusive of both ends. If a word does not exist in this time frame, ignore it
      * rather than throwing an exception.
-     * 提供 WORDS 中所有词语在 STARTYEAR 至ENDYEAR，包含两端 之间每年总的相对频率。
-     * 如果某个词不在该时间范围内，则忽略它
+     *
+     *
      */
     public TimeSeries summedWeightHistory(Collection<String> words, int startYear, int endYear) {
         // TODO: Fill in this method.
